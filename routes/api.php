@@ -41,8 +41,8 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     # - restart nginx
 
     # Notify in Github issue/PR comment
-    $message = "You're awesome! 🎊 🎉 You can now test your PR using the new environment in the URL below.\n" + 
-        "✅ {$url} \n\n" +
+    $message = "You're awesome! 🎊 🎉 You can now test your PR using the new environment in the URL below.\n" .
+        "✅ {$url} \n\n" .
         "[🤖]";
     (new Github())->setIssueNumber($number)
         ->comment($message);
