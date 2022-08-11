@@ -35,16 +35,17 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     $url = "http://{$slug}.fathur.io/";
 
     # Call script to create new virtual environment
-    # - create route 53 subdomain
-    # - create virtual host file
-    # - clone repo at specific branch
-    # - restart nginx
+    // (new Deployer)->createDNSDomain("{$slug}.fathur.io")
+    //     ->cloneRepoInBranch($branch)
+    //     ->createNginxVirtualHost()
+    //     ->restartNginx();
+
 
     # Notify in Github issue/PR comment
     $message = "Awesome! 🎊 🎉 You can test your PR using the environment in the URL below.\n\n" .
         "✅ {$url} \n\n" .
         "[🤖]";
-    (new Github())->setIssueNumber($number)
+    (new Github)->setIssueNumber($number)
         ->comment($message);
 
     return $slug;
@@ -66,10 +67,10 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
     ]);
 
     # Call script to destroy virtual environment
-    # - delete route 53 subdomain
-    # - delete virtual host file
-    # - delete repo at specific slug
-    # - restart nginx
+    // (new Deployer)->deleteDNSDomain("{$slug}.fathur.io")
+    //     ->deleteRepoInBranch($branch)
+    //     ->deleteNginxVirtualHost()
+    //     ->restartNginx();
 
     if ($merged) {
 
@@ -78,7 +79,7 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
         # - restart nginx
 
         # Notify in Github issue/PR comment that PR successfull merged
-        $message = "### Merged successful \n\nCongrats! your PR successfully merged 🎊 🎊. The previous generated URL and its environment can no longer be used.";
+        $message = "Congrats! your PR successfully merged 🎊 🎊. The previous generated URL and its environment can no longer be used.";
         (new Github())->setIssueNumber($number)
             ->comment($message);
     }
