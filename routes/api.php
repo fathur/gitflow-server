@@ -55,15 +55,15 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
 # Send params 
 # merged=false
 # branch=jhg
-Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
-    # Call script to destroy virtual environment
-    # - delete route 53 subdomain
-    # - delete virtual host file
-    # - delete repo at specific slug
-    # - restart nginx
+// Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
+//     # Call script to destroy virtual environment
+//     # - delete route 53 subdomain
+//     # - delete virtual host file
+//     # - delete repo at specific slug
+//     # - restart nginx
 
-    return $slug;
-});
+//     return $slug;
+// });
 
 # Used to merged PR
 # Send params 
@@ -73,6 +73,11 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
 Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
     $branch = $request->get('branch');
     $number = $request->get("pr_number");
+    $merged = $request->get("merged");
+
+    Log::info([
+        "merged" => $merged
+    ]);
 
     # Call script to destroy virtual environment
     # - delete route 53 subdomain
