@@ -29,7 +29,11 @@ use App\Services\Github;
 # branch=jhg
 # pr_number=3
 Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
-    Log::info("post subdomain");
+    $branch = $request->get('branch');
+    $number = $request->get("pr_number");
+
+    $url = "http://{$slug}.fathur.io/";
+
     # Call script to create new virtual environment
     # - create route 53 subdomain
     # - create virtual host file
@@ -37,24 +41,11 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     # - restart nginx
 
     # Notify in Github issue/PR comment
-    (new Github())->setIssueNumber($request->get("pr_number"))
-        ->comment("Send from gitflow server");
-
-    // $issueNumber = $request->get("pr_number");
-    // Log::info([
-    //     "issue_number" => $issueNumber
-    // ]);
-    // $token = config('github.access_token');
-    // Log::info([
-    //     "token" => $token
-    // ]);
-    // $comment = "dari server donks";
-    // $response = Http::withHeaders([
-    //     "Authorization" => "token {$token}",
-    //     "Accept" => "application/vnd.github+json"
-    // ])->post("https://api.github.com/repos/fathur/gitflow-workflow/issues/{$issueNumber}/comments", [
-    //     "body" => $comment
-    // ]);
+    $message = "You're awesome! 🎊 🎉 You can now test your PR using the new environment in the URL below.\n" + 
+        "✅ {$url} \n\n" +
+        "[🤖]";
+    (new Github())->setIssueNumber($number)
+        ->comment($message);
 
     return $slug;
 
