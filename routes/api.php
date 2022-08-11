@@ -41,7 +41,7 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     # - restart nginx
 
     # Notify in Github issue/PR comment
-    $message = "Awesome! 🎊 🎉 You can now test your PR using the environment in the URL below.\n\n" .
+    $message = "Awesome! 🎊 🎉 You can test your PR using the environment in the URL below.\n\n" .
         "✅ {$url} \n\n" .
         "[🤖]";
     (new Github())->setIssueNumber($number)
@@ -78,7 +78,7 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
         # - restart nginx
 
         # Notify in Github issue/PR comment that PR successfull merged
-        $message = "Congrats! your PR successfully merged 🎊 🎊.The previous generated URL and its environment can no longer be used.";
+        $message = "### Merged successful \n\nCongrats! your PR successfully merged 🎊 🎊. The previous generated URL and its environment can no longer be used.";
         (new Github())->setIssueNumber($number)
             ->comment($message);
     }
