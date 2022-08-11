@@ -23,12 +23,8 @@ class Github
     protected $issueNumber;
 
     public function __construct($token = null) {
-        if (is_null($token)) {
-            $this->token = "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";
-        } else {
-            $this->token = $token;
-        }
-
+       
+        $this->token = is_null($token) ? config('github.access_token') : $token;
     }
 
     public function setIssueNumber($number) {
