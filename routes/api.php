@@ -59,8 +59,18 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     # - restart nginx
 
     # Notify in Github issue/PR comment
-    (new Github())->setIssueNumber($request->get("pr_number"))
-        ->comment("Send from gitflow server");
+    // (new Github())->setIssueNumber($request->get("pr_number"))
+    //     ->comment("Send from gitflow server");
+
+    $issueNumber = $request->get("pr_number");
+    $token = config('github.access_token');
+    $comment = "dari server donks";
+    $response = Http::withHeaders([
+        "Authorization" => "token {$token}",
+        "Accept" => "application/vnd.github+json"
+    ])->post("https://api.github.com/repos/fathur/gitflow-workflow/issues/{$issueNumber}/comments", [
+        "body" => $comment
+    ]);
 
     return $slug;
 
