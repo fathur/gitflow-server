@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Services\Github;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,32 +18,7 @@ use Illuminate\Support\Facades\Log;
 */
 
 
-class Github
-{
-    private $token;
 
-    protected $issueNumber;
-
-    public function __construct($token = null) {
-       
-        $this->token = is_null($token) ? config('github.access_token') : $token;
-    }
-
-    public function setIssueNumber($number) {
-        $this->issueNumber = $number; 
-        return $this;                             
-    }
-
-    public function comment($comment)
-    {
-        $response = Http::withHeaders([
-            "Authorization" => "token {$this->token}",
-            "Accept" => "application/vnd.github+json"
-        ])->post("https://api.github.com/repos/fathur/gitflow-workflow/issues/{$this->issueNumber}/comments", [
-            "body" => $comment
-        ]);
-    }
-}
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
@@ -61,24 +37,24 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     # - restart nginx
 
     # Notify in Github issue/PR comment
-    // (new Github())->setIssueNumber($request->get("pr_number"))
-    //     ->comment("Send from gitflow server");
+    (new Github())->setIssueNumber($request->get("pr_number"))
+        ->comment("Send from gitflow server");
 
-    $issueNumber = $request->get("pr_number");
-    Log::info([
-        "issue_number" => $issueNumber
-    ]);
-    $token = config('github.access_token');
-    Log::info([
-        "token" => $token
-    ]);
-    $comment = "dari server donks";
-    $response = Http::withHeaders([
-        "Authorization" => "token {$token}",
-        "Accept" => "application/vnd.github+json"
-    ])->post("https://api.github.com/repos/fathur/gitflow-workflow/issues/{$issueNumber}/comments", [
-        "body" => $comment
-    ]);
+    // $issueNumber = $request->get("pr_number");
+    // Log::info([
+    //     "issue_number" => $issueNumber
+    // ]);
+    // $token = config('github.access_token');
+    // Log::info([
+    //     "token" => $token
+    // ]);
+    // $comment = "dari server donks";
+    // $response = Http::withHeaders([
+    //     "Authorization" => "token {$token}",
+    //     "Accept" => "application/vnd.github+json"
+    // ])->post("https://api.github.com/repos/fathur/gitflow-workflow/issues/{$issueNumber}/comments", [
+    //     "body" => $comment
+    // ]);
 
     return $slug;
 
