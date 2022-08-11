@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,7 @@ class Github
 # branch=jhg
 # pr_number=3
 Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
+    Log::info("post subdomain");
     # Call script to create new virtual environment
     # - create route 53 subdomain
     # - create virtual host file
@@ -63,7 +65,13 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     //     ->comment("Send from gitflow server");
 
     $issueNumber = $request->get("pr_number");
+    Log::info([
+        "issue_number" => $issueNumber
+    ]);
     $token = config('github.access_token');
+    Log::info([
+        "token" => $token
+    ]);
     $comment = "dari server donks";
     $response = Http::withHeaders([
         "Authorization" => "token {$token}",
