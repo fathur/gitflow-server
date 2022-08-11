@@ -41,7 +41,7 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     # - restart nginx
 
     # Notify in Github issue/PR comment
-    $message = "You're awesome! 🎊 🎉 You can now test your PR using the new environment in the URL below.\n" .
+    $message = "Awesome! 🎊 🎉 You can now test your PR using the environment in the URL below.\n\n" .
         "✅ {$url} \n\n" .
         "[🤖]";
     (new Github())->setIssueNumber($number)
@@ -62,10 +62,6 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
     # - delete repo at specific slug
     # - restart nginx
 
-    # Notify in Github issue/PR comment 
-    (new Github())->setIssueNumber($request->get("pr_number"))
-        ->comment("Send from gitflow server");
-
     return $slug;
 });
 
@@ -75,6 +71,9 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
 # target_branch=abc
 # branch=jhg
 Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
+    $branch = $request->get('branch');
+    $number = $request->get("pr_number");
+
     # Call script to destroy virtual environment
     # - delete route 53 subdomain
     # - delete virtual host file
@@ -86,8 +85,9 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
     # - restart nginx
 
     # Notify in Github issue/PR comment that PR successfull merged
-    (new Github())->setIssueNumber($request->get("pr_number"))
-        ->comment("Send from gitflow server");
+    $message = "Congrats! your PR successfully merged 🎊 🎊.The previous generated URL and its environment can no longer be used.";
+    (new Github())->setIssueNumber($number)
+        ->comment($message);
         
     return $slug;
 });
