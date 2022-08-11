@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class SubDomain extends Model
 {
     use HasFactory;
+
+    protected $table = 'sub_domains';
 }

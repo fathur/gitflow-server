@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Services\Github;
+use App\Models\SubDomain;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,10 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     //     ->createNginxVirtualHost()
     //     ->restartNginx();
 
+    # Store in the database to check the creation status
+    SubDomain::create([
+        'sub_domain' => $slug
+    ]);
 
     # Notify in Github issue/PR comment
     $message = "Awesome! 🎊 🎉 You can test your PR using the environment in the URL below.\n\n" .
@@ -84,6 +89,9 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
             ->comment($message);
     }
 
+    # Delete record from DB
+    SubDomain::where('sub_domain', $slug)->delete();
+
     return $slug;
 });
 
@@ -94,6 +102,19 @@ Route::put('/sub-domains/{slug}', function (Request $request, $slug) {
     # Deploy branch with new code
     # - pull latest changes
     # - restart nginx
+
+    if (!SubDomain::where('sub_domain', $slug)->exists()) {
+        SubDomain::create([
+            'sub_domain' => $slug
+        ]);
+
+        # Notify in Github issue/PR comment
+        $message = "Awesome! 🎊 🎉 You can test your PR using the environment in the URL below.\n\n" .
+            "✅ {$url} \n\n" .
+            "[🤖]";
+        (new Github)->setIssueNumber($number)
+            ->comment($message);
+    }
 
     return $slug;
 });
