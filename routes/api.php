@@ -51,20 +51,6 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
 
 });
 
-# Used to closed PR
-# Send params 
-# merged=false
-# branch=jhg
-// Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
-//     # Call script to destroy virtual environment
-//     # - delete route 53 subdomain
-//     # - delete virtual host file
-//     # - delete repo at specific slug
-//     # - restart nginx
-
-//     return $slug;
-// });
-
 # Used to merged PR
 # Send params 
 # merged=true
@@ -73,7 +59,7 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
 Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
     $branch = $request->get('branch');
     $number = $request->get("pr_number");
-    $merged = $request->get("merged");
+    $merged = $request->boolean("merged");
 
     Log::info([
         "merged" => $merged
@@ -85,15 +71,18 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
     # - delete repo at specific slug
     # - restart nginx
 
-    # Deploy target branch with new code
-    # - pull latest changes
-    # - restart nginx
+    if ($merged) {
 
-    # Notify in Github issue/PR comment that PR successfull merged
-    $message = "Congrats! your PR successfully merged 🎊 🎊.The previous generated URL and its environment can no longer be used.";
-    (new Github())->setIssueNumber($number)
-        ->comment($message);
-        
+        # Deploy target branch with new code
+        # - pull latest changes
+        # - restart nginx
+
+        # Notify in Github issue/PR comment that PR successfull merged
+        $message = "Congrats! your PR successfully merged 🎊 🎊.The previous generated URL and its environment can no longer be used.";
+        (new Github())->setIssueNumber($number)
+            ->comment($message);
+    }
+
     return $slug;
 });
 
