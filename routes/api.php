@@ -69,7 +69,7 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
     # Notify in Github issue/PR comment that PR successfull merged
 
     return $slug;
-})
+});
 
 # Used to sync PR
 # Send params 
