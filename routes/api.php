@@ -103,12 +103,11 @@ Route::put('/sub-domains/{slug}', function (Request $request, $slug) {
     # - pull latest changes
     # - restart nginx
 
-    $url = "http://{$slug}.fathur.io/";
 
     if (!SubDomain::where('sub_domain', $slug)->exists()) {
-        SubDomain::create([
-            'sub_domain' => $slug
-        ]);
+        $url = "http://{$slug}.fathur.io/";
+
+        SubDomain::create(['sub_domain' => $slug]);
 
         # Notify in Github issue/PR comment
         $message = "Awesome! 🎊 🎉 You can test your PR using the environment in the URL below.\n\n" .
