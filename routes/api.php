@@ -103,6 +103,8 @@ Route::put('/sub-domains/{slug}', function (Request $request, $slug) {
     # - pull latest changes
     # - restart nginx
 
+    $url = "http://{$slug}.fathur.io/";
+
     if (!SubDomain::where('sub_domain', $slug)->exists()) {
         SubDomain::create([
             'sub_domain' => $slug
