@@ -10,4 +10,6 @@ class SubDomain extends Model
     use HasFactory;
 
     protected $table = 'sub_domains';
+
+    protected $fillable = ['sub_domain'];
 }

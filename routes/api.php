@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Services\Github;
+use App\Services\Deployer;
 use App\Models\SubDomain;
 
 /*
@@ -36,15 +37,13 @@ Route::post('/sub-domains/{slug}', function (Request $request, $slug) {
     $url = "http://{$slug}.fathur.io/";
 
     # Call script to create new virtual environment
-    // (new Deployer)->createDNSDomain("{$slug}.fathur.io")
-    //     ->cloneRepoInBranch($branch)
-    //     ->createNginxVirtualHost()
-    //     ->restartNginx();
+    (new Deployer)->createDNSDomain("{$slug}.fathur.io")
+        ->cloneRepoInBranch($branch)
+        ->createNginxVirtualHost()
+        ->restartNginx();
 
     # Store in the database to check the creation status
-    SubDomain::create([
-        'sub_domain' => $slug
-    ]);
+    SubDomain::create(['sub_domain' => $slug]);
 
     # Notify in Github issue/PR comment
     $message = "Awesome! 🎊 🎉 You can test your PR using the environment in the URL below.\n\n" .
@@ -72,10 +71,11 @@ Route::delete('/sub-domains/{slug}', function (Request $request, $slug) {
     ]);
 
     # Call script to destroy virtual environment
-    // (new Deployer)->deleteDNSDomain("{$slug}.fathur.io")
-    //     ->deleteRepoInBranch($branch)
-    //     ->deleteNginxVirtualHost()
-    //     ->restartNginx();
+    $deployer = new Deployer;
+    (new Deployer)->deleteDNSDomain("{$slug}.fathur.io")
+        ->deleteRepoInBranch($branch)
+        ->deleteNginxVirtualHost()
+        ->restartNginx();
 
     if ($merged) {
 
